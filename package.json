@@ -5,11 +5,6 @@
   "author": "Vanshika Alag",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "backend",
-    "worker",
-    "frontend"
-  ],
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
     "dev:worker": "npm --prefix worker run dev",
