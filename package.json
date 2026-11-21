@@ -1,0 +1,27 @@
+{
+  "name": "cloudvault",
+  "version": "1.0.0",
+  "description": "CloudVault - Cloud-Native Asynchronous Asset Processing Pipeline with S3 Presigned URLs & BullMQ",
+  "author": "Vanshika Alag",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "worker",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:worker": "npm --prefix worker run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:backend": "npm --prefix backend run build",
+    "build:worker": "npm --prefix worker run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:backend && npm run build:worker && npm run build:frontend",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:build": "docker compose build",
+    "verify": "node scripts/verify-pipeline.js"
+  }
+}

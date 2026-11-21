@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+enum FileStatus {
+  PENDING
+  UPLOADING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  storageQuota BigInt   @default(52428800) @map("storage_quota")
+  storageUsed  BigInt   @default(0) @map("storage_used")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  files File[]
+
+  @@map("users")
+}
+
+model File {
+  id            String     @id @default(uuid())
+  userId        String     @map("user_id")
+  fileName      String     @map("file_name")
+  fileSizeBytes BigInt     @map("file_size_bytes")
+  mimeType      String     @map("mime_type")
+  s3Key         String     @unique @map("s3_key")
+  thumbnailKey  String?    @map("thumbnail_key")
+  status        FileStatus @default(PENDING)
+  metadata      Json       @default("{}")
+  errorMessage  String?    @map("error_message")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_files_user_id")
+  @@index([status], name: "idx_files_status")
+  @@map("files")
+}
