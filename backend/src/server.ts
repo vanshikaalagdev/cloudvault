@@ -2,6 +2,7 @@ import app from './app';
 import { config } from './config/env';
 import { prisma } from './config/db';
 import { redisConnection } from './config/queue';
+import { startEmbeddedWorker } from './worker/worker';
 
 const PORT = config.port;
 
@@ -12,6 +13,11 @@ const server = app.listen(PORT, () => {
   console.log(`📦 Storage Provider: ${config.storage.provider.toUpperCase()}`);
   console.log(`🗄️  Bucket: ${config.storage.bucket}`);
   console.log(`=======================================================`);
+
+  // Start embedded queue worker if enabled (ideal for single-instance free cloud deployments like Render)
+  if (process.env.RUN_WORKER !== 'false') {
+    startEmbeddedWorker();
+  }
 });
 
 const gracefulShutdown = async (signal: string) => {
